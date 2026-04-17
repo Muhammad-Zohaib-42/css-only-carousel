@@ -1,0 +1,188 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+
+:root {
+    /* Background & Grid */
+    --bg-color: #0d1117;           /* Deep navy/charcoal */
+    --grid-line-color: #30363d;    /* Subtle line color for your box trick */
+    
+    /* Surface & Carousel */
+    --card-bg: #161b22;            /* Slightly lighter than body */
+    --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 
+                   0 0 15px rgba(0, 0, 0, 0.2);
+    
+    /* Text Colors */
+    --text-main: #e6edf3;          /* Soft white (not piercing) */
+    --text-muted: #8b949e;         /* For less important info */
+    
+    /* Buttons & Interactive */
+    --btn-bg: #21262d;             /* Dark gray button */
+    --btn-text: #ffffff;
+    --btn-hover-bg: #30363d;
+    
+    /* Accent / Active State */
+    --accent-color: #58a6ff;       /* Soft blue for active states */
+    --accent-glow: 0 0 12px rgba(88, 166, 255, 0.4);
+    
+    /* Scroll Markers (Dots) */
+    --marker-bg: #30363d;          /* Inactive dots */
+    --marker-active: #58a6ff;      /* Active dot matches accent */
+}
+
+section {
+    height: 100dvh;
+    display: grid;
+    place-content: center;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    background-image: linear-gradient(var(--grid-line-color) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line-color) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: moveBg 40s 0s linear infinite;
+    anchor-name: --section;
+}
+
+@keyframes moveBg {
+    to {
+        background-position: bottom;
+    }
+}
+
+.title,
+.description {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.title {
+    margin-bottom: .5rem;
+}
+
+a {
+    color: var(--accent-color);
+}
+
+.carousel {
+    height: 300px;
+    width: 600px;
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    border-radius: 1rem;
+    box-shadow: var(--card-shadow);
+    anchor-name: --carousel;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scroll-marker-group: after;
+}
+
+.carousel::scroll-marker-group {
+    display: flex;
+    justify-content: center;
+    gap: .4rem;
+    padding-top: 1rem;
+}
+
+.carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.carousel::scroll-button(right),
+.carousel::scroll-button(left) {
+    content: "→";
+    border: none;
+    outline: none;
+    height: 40px;
+    width: 40px;
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+    border-radius: 50%;
+    font-size: 1rem;
+    position: fixed;
+    position-anchor: --carousel;
+    position-area: center right;
+    transform: translateX(-50%);
+    cursor: pointer;
+    transition: all .3s ease;
+    box-shadow: var(--card-shadow);
+
+    &:hover {
+        background-color: var(--btn-hover-bg);
+    }
+}
+
+.carousel::scroll-button(left) {
+    content: "←";
+    position-area: center left;
+    transform: translateX(50%);
+}
+
+.carousel::scroll-button(left):disabled,
+.carousel::scroll-button(right):disabled {
+    opacity: .5;
+    cursor: auto;
+}
+
+.item {
+    flex: 0 0 100%;
+    aspect-ratio: 5 / 3;
+    scroll-snap-align: start;
+}
+
+.item::scroll-marker {
+    content: "";
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background-color: var(--marker-bg);
+    flex-shrink: 0;
+}
+
+.item::scroll-marker:target-current {
+    background-color: var(--accent-color);
+    box-shadow: var(--accent-glow);
+}
+
+.item img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 1rem;
+}
+
+.footer {
+    position: fixed;
+    position-anchor: --section;
+    position-area: bottom center;
+    transform: translateY(-30px);
+}
+
+@media (max-width: 768px) {
+    section {
+        place-content: start;
+        padding-top: 1.5rem;
+    }
+
+    .carousel {
+        width: 95%;
+        height: 200px;
+        margin-inline: auto;
+    }
+
+    .carousel::scroll-button(right),
+    .carousel::scroll-button(left) {
+        padding-bottom: .6rem;
+        font-size: 1.5rem;
+    }
+}
